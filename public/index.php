@@ -8,9 +8,18 @@ $router->add('posts', ['controller' => 'Posts', 'action' => 'index']);
 $router->add('posts/new', ['controller' => 'Posts', 'action' => 'new']);
 
 
-echo '<pre>';
-print_r($router->getRoutes());
-echo '</pre>';
+//echo '<pre>';
+//print_r($router->getRoutes());
+//echo '</pre>';
+
+$url = $_SERVER['QUERY_STRING'];
+
+if ($router->match($url)) {
+    echo '<pre>';
+        print_r($router->getParams());
+    echo '</pre>';
+}
+
 
 
 ?>

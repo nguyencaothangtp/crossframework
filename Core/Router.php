@@ -8,6 +8,12 @@ class Router {
     protected $routes = [];
 
     /**
+     * Array to store matched route
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * Add a route to the routing table
      *
      * @param $route
@@ -24,6 +30,31 @@ class Router {
      */
     public function getRoutes() {
         return $this->routes;
+    }
+
+    /**
+     * Return the matched params
+     * @return array
+     */
+    public function getParams() {
+        return $this->params;
+    }
+
+    /**
+     * Match the url with the routing table
+     * @param $url
+     * @return bool true if a match found
+     */
+    public function match($url) {
+        foreach ($this->routes as $route => $params) {
+            if ($url == $route) {
+                $this->params = $params;
+                return true;
+            }
+
+        }
+
+        return false;
     }
 
 }
