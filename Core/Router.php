@@ -19,7 +19,20 @@ class Router {
      * @param $route
      * @param $params
      */
-    public function add($route, $params) {
+    public function add($route, $params = []) {
+        // Escape / character
+        $route = preg_replace('/\//', '\\/', $route);
+
+        // Convert variable (eg. {controller])
+        $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
+
+        // Convert variable with custom regular expression e.g {id:\d+}
+        $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
+
+        // Add start, end delimiters, and case insensitive flag
+        $route = '/^' . $route . '$/i';
+
+        // Add to routing table
         $this->routes[$route] = $params;
     }
 
@@ -46,12 +59,20 @@ class Router {
      * @return bool true if a match found
      */
     public function match($url) {
-        foreach ($this->routes as $route => $params) {
-            if ($url == $route) {
+        // Get the name of the captured group
+        $params = [];
+
+        foreach ($this->routes as $route => $match) {
+            if (preg_match($route, $url, $matches)) {
+                foreach ($matches as $key => $value) {
+                    if (is_string($key)) {
+                        $params[$key] = $value;
+                    }
+                }
+
                 $this->params = $params;
                 return true;
             }
-
         }
 
         return false;
