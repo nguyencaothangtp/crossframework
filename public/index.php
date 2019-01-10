@@ -1,9 +1,21 @@
 <?php
 
-require '../Core/Router.php';
-require '../App/Controllers/Posts.php';
+//require '../Core/Router.php';
+//require '../App/Controllers/Posts.php';
 
-$router = new Router();
+/**
+ *  Autoloader
+ */
+
+spl_autoload_register(function ($className) {
+    $root = dirname(__DIR__);
+    $file = $root . '/' . str_replace('\\', '/', $className) . '.php';
+    if (is_readable($file)) {
+        require $root . '/' . str_replace('\\', '/', $className) . '.php';
+    }
+});
+
+$router = new Core\Router();
 $router->add('', ['controller' => 'Home', 'action' => 'index']);
 $router->add('{controller}/{action}');
 $router->add('{controller}/{id:\d+}/{action}');

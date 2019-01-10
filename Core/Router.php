@@ -1,5 +1,7 @@
 <?php
 
+namespace Core;
+
 class Router {
     /**
      * Associate array of routes (the routing table)
@@ -79,6 +81,7 @@ class Router {
         if ($this->match($url)) {
             $controller = $this->params['controller'];
             $controller = Router::convertToStudlyCaps($controller);
+            $controller = "App\Controllers\\$controller";
 
             if (class_exists($controller)) {
                 $controllerObject = new $controller();
