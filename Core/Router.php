@@ -59,23 +59,52 @@ class Router {
      * @return bool true if a match found
      */
     public function match($url) {
-        // Get the name of the captured group
-        $params = [];
-
         foreach ($this->routes as $route => $match) {
             if (preg_match($route, $url, $matches)) {
                 foreach ($matches as $key => $value) {
                     if (is_string($key)) {
-                        $params[$key] = $value;
+                        $match[$key] = $value;
                     }
                 }
 
-                $this->params = $params;
+                $this->params = $match;
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function dispatch($url) {
+        if ($this->match($url)) {
+            $controller = $this->params['controller'];
+            $controller = Router::convertToStudlyCaps($controller);
+
+            if (class_exists($controller)) {
+                $controllerObject = new $controller();
+
+                $action = $this->params['action'];
+                $action = Router::convertToCamelCase($action);
+
+                if (is_callable([$controllerObject, $action])) {
+                    $controllerObject->$action();
+                } else {
+                    echo "Method action $action in controller $controller doesn't exist.";
+                }
+            } else {
+                echo "Controller class $controller doesn't exist";
+            }
+        } else {
+            echo 'Request doesn\'t match any url';
+        }
+    }
+
+    static function convertToStudlyCaps($string) {
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
+    }
+
+    static function convertToCamelCase($string) {
+        return lcfirst(Router::convertToStudlyCaps($string));
     }
 
 }
