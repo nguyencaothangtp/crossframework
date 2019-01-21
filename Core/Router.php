@@ -78,21 +78,22 @@ class Router {
     }
 
     public function dispatch($url) {
+        $url = Router::removeQueryStringVariables($url);
         if ($this->match($url)) {
             $controller = $this->params['controller'];
             $controller = Router::convertToStudlyCaps($controller);
-            $controller = "App\Controllers\\$controller";
+            $controller = $this->getNamespace() . $controller;
 
             if (class_exists($controller)) {
-                $controllerObject = new $controller();
+                $controllerObject = new $controller($this->params);
 
                 $action = $this->params['action'];
                 $action = Router::convertToCamelCase($action);
 
-                if (is_callable([$controllerObject, $action])) {
+                if (preg_match('/action$/i', $action) == 0) {
                     $controllerObject->$action();
                 } else {
-                    echo "Method action $action in controller $controller doesn't exist.";
+                    echo "Method action $action in controller $controller can not be called directly";
                 }
             } else {
                 echo "Controller class $controller doesn't exist";
@@ -102,12 +103,32 @@ class Router {
         }
     }
 
+    public function getNamespace() {
+        /** default namespace **/
+        $namespace = 'App\Controllers\\';
+
+        if (array_key_exists('namespace', $this->params)) {
+            $namespace .= $this->params['namespace'] . '\\';
+        }
+
+        return $namespace;
+    }
+
     static function convertToStudlyCaps($string) {
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
     }
 
     static function convertToCamelCase($string) {
         return lcfirst(Router::convertToStudlyCaps($string));
+    }
+
+    static function removeQueryStringVariables($url) {
+        if ('' != $url) {
+            $parts = explode('&', $url);
+            $url = $parts[0];
+        }
+
+        return $url;
     }
 
 }

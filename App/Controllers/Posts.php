@@ -2,16 +2,21 @@
 
 namespace App\Controllers;
 
-class Posts {
-    public function __construct() {
+class Posts extends \Core\Controller {
 
-    }
-
-    public function index() {
+    public function indexAction() {
         echo 'I am in index action of Post controller';
     }
 
-    public function newPost() {
-        
+    public function newPostAction() {
+        echo 'I am in new post action of Post controller';
+    }
+
+    protected function before() {
+        echo '(before)';
+    }
+
+    protected function after() {
+        echo ' (after)';
     }
 }

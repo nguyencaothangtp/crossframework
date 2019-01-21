@@ -2,12 +2,17 @@
 
 namespace App\Controllers;
 
-class Home {
-    public function __construct() {
+class Home extends \Core\Controller {
 
+    public function indexAction() {
+        echo 'I am in index action of Home controller';
     }
 
-    public function index() {
-        echo 'I am in index action of Home controller';
+    protected function before() {
+        echo '(before)';
+    }
+
+    protected function after() {
+        echo ' (after)';
     }
 }
