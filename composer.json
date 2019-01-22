@@ -1,0 +1,11 @@
+{
+    "require": {
+        "duncan3dc/blade": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "Core/",
+            "App\\": "App/"
+        }
+    }
+}

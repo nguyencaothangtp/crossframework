@@ -2,11 +2,17 @@
 
 namespace Core;
 
+use duncan3dc\Laravel\BladeInstance;
+
 abstract class Controller {
     public $routeParams;
+    public $blade;
 
     public function __construct($routeParams) {
         $this->routeParams = $routeParams;
+        $shortClassName = substr(strrchr(get_class($this), '\\'), 1);
+        $this->blade = new BladeInstance(dirname(__DIR__) . "/App/Views/" . $shortClassName,
+            dirname(__DIR__) . "/App/Views/cache");
     }
 
     public function __call($name, $args) {

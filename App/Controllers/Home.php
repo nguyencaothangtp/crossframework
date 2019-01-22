@@ -2,14 +2,10 @@
 
 namespace App\Controllers;
 
-use \Core\View;
-
 class Home extends \Core\Controller {
 
     public function indexAction() {
-//        echo 'I am in index action of Home controller';
-        $data['test'] = '<script>alert(1)</script>';
-        View::render('Home/index.php', $data);
+        echo $this->blade->render('index', ['title' => 'I am the title', 'slot' => 5]);
     }
 
     protected function before() {
